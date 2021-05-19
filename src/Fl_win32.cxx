@@ -1197,6 +1197,11 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     window->clear_damage();
     } return 0;
 
+  // forward finger-touch as a mouse cursor
+  case 0x0246:  		return 0;												// WM_POINTERDOWN
+  case 0x0247:  		mouse_event(window, 2, 1, wParam, lParam); return 0;	// WM_POINTERUP
+  case 0x0245:			mouse_event(window, 3, 0, wParam, lParam); return 0;	// WM_POINTERUPDATE
+
   case WM_LBUTTONDOWN:  mouse_event(window, 0, 1, wParam, lParam); return 0;
   case WM_LBUTTONDBLCLK:mouse_event(window, 1, 1, wParam, lParam); return 0;
   case WM_LBUTTONUP:    mouse_event(window, 2, 1, wParam, lParam); return 0;
@@ -1487,7 +1492,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
   case WM_DISPLAYCHANGE: // occurs when screen configuration (number, position) changes
     Fl::call_screen_init();
-    Fl::handle(FL_SCREEN_CONFIGURATION_CHANGED, NULL);
+	Fl::handle(FL_SCREEN_CONFIGURATION_CHANGED, window);
     return 0;
 
   case WM_CHANGECBCHAIN:
